@@ -1,77 +1,59 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			],
-			planets: [],
-			people: []
+			planets: null,
+			people: null,
+			favorites: []
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
 			loadPlanets: () => {
 				fetch("https://www.swapi.tech/api/planets/")
 					.then(res => res.json())
-					.then(data => {
+					.then(async data => {
 						let resultsArray = data.results;
-						let planetsArray = [];
+						let planetsArray = new Array();
 						for (let i = 0; i < resultsArray.length; i++) {
-							fetch(resultsArray[i].url)
-								.then(res => res.json())
-								.then(data => {
-									planetsArray.push(data.result.properties);
-								})
-								.catch(err => console.error(err));
+							const response = await fetch(resultsArray[i].url);
+							const json = await response.json();
+							const data = await json.result.properties;
+							planetsArray.push(data);
 						}
-						console.log(planetsArray);
+						// Promise.all(peopleArray).then(values => {
 						setStore({ planets: planetsArray });
+						// });
 					})
 					.catch(err => console.error(err));
 			},
 			loadPeople: () => {
 				fetch("https://www.swapi.tech/api/people/")
 					.then(res => res.json())
-					.then(data => {
+					.then(async data => {
 						let resultsArray = data.results;
-						let peopleArray = [];
+						let peopleArray = new Array();
 						for (let i = 0; i < resultsArray.length; i++) {
-							fetch(resultsArray[i].url)
-								.then(res => res.json())
-								.then(data => {
-									peopleArray.push(data.result.properties);
-								})
-								.catch(err => console.error(err));
+							const response = await fetch(resultsArray[i].url);
+							const json = await response.json();
+							const data = await json.result.properties;
+							peopleArray.push(data);
 						}
-						console.log(peopleArray);
+						// Promise.all(peopleArray).then(values => {
 						setStore({ people: peopleArray });
+						// });
 					})
 					.catch(err => console.error(err));
 			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
 
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
+			handleChangeFavorites: fav => {
+				let newFavorites = getStore().favorites;
+				const objFavorite = newFavorites.find(element => element.id == fav.id && element.type == fav.type);
+				if (!objFavorite) {
+					newFavorites.push(fav);
+				} else {
+					let elementRemove = newFavorites.splice(newFavorites.indexOf(objFavorite), 1);
+				}
 
-				//reset the global store
-				setStore({ demo: demo });
+				setStore({ favorites: newFavorites });
 			}
 		}
 	};

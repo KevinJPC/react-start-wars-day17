@@ -1,3 +1,55 @@
 /* 
     General Styles
 */
+
+.logo-page{
+    width: 60px;
+}
+
+.number-favorites{
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.cards-container{
+    overflow-x: auto;
+}
+
+.card-container{
+    margin-right: 50px;
+}
+
+.card-container{
+    min-width: 300px;
+}
+
+.favorites-btn{
+    background-color: transparent;
+}
+
+hr{
+    height: 1px;
+    width: 90%;
+}
+
+.trash-btn{
+    border: none;
+    background-color: transparent;
+}
+
+::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+   }
+   ::-webkit-scrollbar-thumb {
+    background: radial-gradient(circle, #fced9a 16%,#ff9a8f 64%);
+    border-radius: 10px;
+   }
+   ::-webkit-scrollbar-thumb:hover{
+    background: linear-gradient(122deg, #ffb4ad 16%,#fced9a 64%);
+   }
+   ::-webkit-scrollbar-track{
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: inset 7px 10px 12px #f0f0f0;
+   }
