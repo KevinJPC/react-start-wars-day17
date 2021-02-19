@@ -19,7 +19,7 @@ export function CardCharacter(props) {
 					</div>
 					<div className="d-flex justify-content-between">
 						<Link to={"/character/" + props.id}>
-							<button className="btn btn-primary">Learn more!</button>
+							<button className="btn btn-primary bg-transparent text-primary">Learn more!</button>
 						</Link>
 						<button
 							onClick={() => actions.handleChangeFavorites({ id: props.id, type: "character" })}

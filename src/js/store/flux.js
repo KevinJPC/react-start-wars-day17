@@ -3,16 +3,23 @@ const getState = ({ getStore, getActions, setStore }) => {
 		store: {
 			planets: null,
 			people: null,
-			favorites: []
+			favorites: [],
+			nextPagePeople: 1,
+			nextPagePlanets: 1,
+			loadingPeople: false,
+			loadingPlanets: false
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
-			loadPlanets: () => {
-				fetch("https://www.swapi.tech/api/planets/")
+			loadPlanets: nextPagePlanets => {
+				fetch("https://www.swapi.tech/api/planets?page=" + nextPagePlanets + "&limit=10")
 					.then(res => res.json())
 					.then(async data => {
 						let resultsArray = data.results;
 						let planetsArray = new Array();
+						if (getStore().planets != null) {
+							planetsArray = getStore().planets;
+						}
 						for (let i = 0; i < resultsArray.length; i++) {
 							const response = await fetch(resultsArray[i].url);
 							const json = await response.json();
@@ -20,17 +27,25 @@ const getState = ({ getStore, getActions, setStore }) => {
 							planetsArray.push(data);
 						}
 						// Promise.all(peopleArray).then(values => {
-						setStore({ planets: planetsArray });
+
+						setStore({
+							nextPagePlanets: getStore().nextPagePlanets + 1,
+							planets: planetsArray,
+							loadingPlanets: !getStore().loadingPlanets
+						});
 						// });
 					})
 					.catch(err => console.error(err));
 			},
-			loadPeople: () => {
-				fetch("https://www.swapi.tech/api/people/")
+			loadPeople: nextPagePeople => {
+				fetch("https://www.swapi.tech/api/people?page=" + nextPagePeople + "&limit=10")
 					.then(res => res.json())
 					.then(async data => {
 						let resultsArray = data.results;
 						let peopleArray = new Array();
+						if (getStore().people != null) {
+							peopleArray = getStore().people;
+						}
 						for (let i = 0; i < resultsArray.length; i++) {
 							const response = await fetch(resultsArray[i].url);
 							const json = await response.json();
@@ -38,7 +53,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 							peopleArray.push(data);
 						}
 						// Promise.all(peopleArray).then(values => {
-						setStore({ people: peopleArray });
+						setStore({
+							nextPagePeople: getStore().nextPagePeople + 1,
+							people: peopleArray,
+							loadingPeople: !getStore().loadingPeople
+						});
 						// });
 					})
 					.catch(err => console.error(err));
@@ -54,6 +73,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 				setStore({ favorites: newFavorites });
+			},
+			handleControlLoadingPeople: () => {
+				setStore({ loadingPeople: !getStore().loadingPeople });
+			},
+			handleControlLoadingPlanets: () => {
+				setStore({ loadingPlanets: !getStore().loadingPlanets });
 			}
 		}
 	};
